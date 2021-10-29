@@ -904,12 +904,37 @@ bool ZepMode::GetCommand(CommandContext& context)
     }
     else if (mappedCommand == id_MotionLineEnd)
     {
-        GetCurrentWindow()->SetBufferCursor(context.buffer.GetLinePos(bufferCursor, LineLocation::LineLastNonCR));
+        auto endPos = context.buffer.GetLinePos(bufferCursor, LineLocation::LineLastNonCR) + 1;
+        GetCurrentWindow()->SetBufferCursor(endPos);
+        return true;
+    }
+    else if (mappedCommand == id_MotionLineEndSelect)
+    {
+        context.commandResult.modeSwitch = EditorMode::Visual;
+        if (m_currentMode != EditorMode::Visual)
+        {
+            m_visualBegin = GetCurrentWindow()->GetBufferCursor();
+        }
+        auto end = context.buffer.GetLinePos(bufferCursor, LineLocation::LineLastNonCR) + 1;
+        auto range = GlyphRange(bufferCursor, end);
+        GetCurrentWindow()->SetBufferCursor(range.second);
+        UpdateVisualSelection();
         return true;
     }
     else if (mappedCommand == id_MotionLineBegin)
     {
         GetCurrentWindow()->SetBufferCursor(context.buffer.GetLinePos(bufferCursor, LineLocation::LineBegin));
+        return true;
+    }
+    else if (mappedCommand == id_MotionLineBeginSelect)
+    {
+        context.commandResult.modeSwitch = EditorMode::Visual;
+        if (m_currentMode != EditorMode::Visual)
+        {
+            m_visualBegin = GetCurrentWindow()->GetBufferCursor();
+        }
+        GetCurrentWindow()->SetBufferCursor(context.buffer.GetLinePos(bufferCursor, LineLocation::LineBegin));
+        UpdateVisualSelection();
         return true;
     }
     else if (mappedCommand == id_MotionLineFirstChar)
@@ -1175,6 +1200,35 @@ bool ZepMode::GetCommand(CommandContext& context)
     else if (mappedCommand == id_MotionGotoBeginning)
     {
         GetCurrentWindow()->SetBufferCursor(context.buffer.Begin());
+        return true;
+    }
+    else if (mappedCommand == id_MotionGotoBeginningSelect)
+    {
+        context.commandResult.modeSwitch = EditorMode::Visual;
+        if (m_currentMode != EditorMode::Visual)
+        {
+            m_visualBegin = GetCurrentWindow()->GetBufferCursor();
+        }
+        GetCurrentWindow()->SetBufferCursor(context.buffer.Begin());
+        UpdateVisualSelection();
+        return true;
+    }
+    else if (mappedCommand == id_MotionGotoEnd)
+    {
+        GetCurrentWindow()->SetBufferCursor(context.buffer.End());
+        return true;
+    }
+    else if (mappedCommand == id_MotionGotoEndSelect)
+    {
+        context.commandResult.modeSwitch = EditorMode::Visual;
+        if (m_currentMode != EditorMode::Visual)
+        {
+            m_visualBegin = GetCurrentWindow()->GetBufferCursor();
+        }
+        auto end = context.buffer.End();
+        auto range = GlyphRange(bufferCursor, end);
+        GetCurrentWindow()->SetBufferCursor(range.second);
+        UpdateVisualSelection();
         return true;
     }
     else if (mappedCommand == id_JoinLines)
