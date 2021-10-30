@@ -79,6 +79,19 @@ void ZepMode_Standard::Init()
 
     keymap_add({ &m_normalMap, &m_visualMap, &m_insertMap }, { "<Escape>" }, id_InsertMode);
     keymap_add({ &m_normalMap }, { "<Backspace>" }, id_MotionStandardLeft);
+
+    keymap_add({ &m_insertMap, &m_visualMap }, { "<Home>" }, id_MotionLineBegin);
+    keymap_add({ &m_insertMap, &m_visualMap }, { "<End>" }, id_MotionLineEnd);
+
+    keymap_add({ &m_insertMap, &m_visualMap }, { "<S-Home>" }, id_MotionLineBeginSelect);
+    keymap_add({ &m_insertMap, &m_visualMap }, { "<S-End>" }, id_MotionLineEndSelect);
+
+    keymap_add({ &m_insertMap, &m_visualMap }, { "<C-Home>" }, id_MotionGotoBeginning);
+    keymap_add({ &m_insertMap, &m_visualMap }, { "<C-End>" }, id_MotionGotoEnd);
+
+    keymap_add({ &m_insertMap, &m_visualMap }, { "<C-S-Home>" }, id_MotionGotoBeginningSelect);
+    keymap_add({ &m_insertMap, &m_visualMap }, { "<C-S-End>" }, id_MotionGotoEndSelect);
+
 }
 
 void ZepMode_Standard::Begin(ZepWindow* pWindow)
